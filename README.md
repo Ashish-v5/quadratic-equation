@@ -1,6 +1,6 @@
 # Quadratic Equation
 
-For the given quadratic equation coefficients (**ax<sup>2</sup> + bx + c = 0**)
+For the given quadratic equation coefficients (**ax<sup>2</sup> + bx + c = 0**),
 return one or two roots of the equation if there is any in the set of real numbers.
 
 Input value is given via `System.in`. Output value must be printed to `System.out`.
