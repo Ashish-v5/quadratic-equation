@@ -1,5 +1,14 @@
 # Quadratic Equation
 
+The purpose of this exercise is to train you to design programs that need decision trees. 
+
+Estimated workload of this exercise is _30 min_.
+
+### Description
+
+Please, proceed to the [QuadraticEquation](src/main/java/com/epam/rd/autotasks/QuadraticEquation.java)
+class and implement a program to solve quadratic equations.
+
 For the given quadratic equation coefficients (**ax<sup>2</sup> + bx + c = 0**),
 return one or two roots of the equation if there is any in the set of real numbers.
 
@@ -14,7 +23,7 @@ The `a` parameter is guaranteed to be not zero.
 
 Hint: [Quadratic formula reference](https://en.wikipedia.org/wiki/Quadratic_formula)
 
-## Examples
+### Examples
 
 ---
 Input: `1`, `-2`, `1`
