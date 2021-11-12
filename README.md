@@ -26,17 +26,17 @@ Hint: [Quadratic formula reference](https://en.wikipedia.org/wiki/Quadratic_form
 ### Examples
 
 ---
-Input: `1`, `-2`, `1`
+Input: `1 -2 1`
 
 Output: `1`
 
 ---
-Input: `2`, `5`, `-3`
+Input: `2 5 -3`
 
 Output: `-3 0.5`
 
 ---
-Input: `2`, `2`, `2`
+Input: `2 2 2`
 
 Output: `no roots`
 
