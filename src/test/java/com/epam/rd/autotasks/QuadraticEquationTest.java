@@ -1,7 +1,6 @@
 package com.epam.rd.autotasks;
 
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,7 +9,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -25,6 +28,8 @@ class QuadraticEquationTest {
     private PrintStream defaultOut;
     private InputStream defaultIn;
 
+    private NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+
 
     @ParameterizedTest
     @MethodSource("testCasesSingleRoot")
@@ -33,13 +38,14 @@ class QuadraticEquationTest {
         try {
             QuadraticEquation.main(new String[]{});
             controlledOut.flush();
-            double expectedRoot = Double.parseDouble(expected);
-            double actualRoot = Double.parseDouble(sink.toString().trim());
+            double expectedRoot = parseNumber(expected);
+            double actualRoot = parseNumber(getActualOutput());
             assertEquals(expectedRoot, actualRoot, 0.00001, "Error on input " + input);
         } finally {
             setStandardStreams();
         }
     }
+
 
     @ParameterizedTest
     @MethodSource("testCases2Roots")
@@ -50,7 +56,7 @@ class QuadraticEquationTest {
             controlledOut.flush();
 
             double[] expectedRoots = parseRoots(expected);
-            double[] actualRoots = parseRoots(sink.toString().trim());
+            double[] actualRoots = parseRoots(getActualOutput());
 
             assertArrayEquals(expectedRoots, actualRoots, 0.00001, "Error on input " + input);
         } finally {
@@ -65,7 +71,7 @@ class QuadraticEquationTest {
         try {
             QuadraticEquation.main(new String[]{});
             controlledOut.flush();
-            assertEquals("no roots", sink.toString().trim(), "Error on input " + input);
+            assertEquals("no roots", getActualOutput(), "Error on input " + input);
         } finally {
             setStandardStreams();
         }
@@ -101,8 +107,8 @@ class QuadraticEquationTest {
     }
 
     private double[] parseRoots(final String input) {
-        Scanner scanner = new Scanner(input);
-        double[] roots = new double[]{scanner.nextDouble(), scanner.nextDouble()};
+        String[] inputTokens = input.split(" ");
+        double[] roots = {parseNumber(inputTokens[0]), parseNumber(inputTokens[1])};
         if (roots[0] > roots[1]) {
             roots = new double[]{roots[1], roots[0]};
         }
@@ -113,7 +119,11 @@ class QuadraticEquationTest {
 
         sink = new ByteArrayOutputStream();
         controlledOut = new PrintStream(sink);
-        controlledIn = new ByteArrayInputStream(input.getBytes());
+        String escapedInput = Arrays.stream(input.split(" "))
+                .mapToDouble(this::parseNumber)
+                .mapToObj(Double::toString)
+                .collect(Collectors.joining(" "));
+        controlledIn = new ByteArrayInputStream(escapedInput.getBytes());
 
         defaultOut = System.out;
         defaultIn = System.in;
@@ -125,6 +135,19 @@ class QuadraticEquationTest {
     private void setStandardStreams() {
         System.setOut(defaultOut);
         System.setIn(defaultIn);
+    }
+
+
+    private double parseNumber(final String string) {
+        try {
+            return numberFormat.parse(string).doubleValue();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getActualOutput() {
+        return sink.toString().replace(",", ".").trim();
     }
 
 
